@@ -3,7 +3,8 @@ package fr.miage.m2.projet;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.ServerTimestamp;
 
-//dans la classe build.grade, ajouter
+//dans la classe build.grade, ajouter implementation 'com.android.support:appcompat-v7:28.0.0'
+//j'ai l'impression que ça ne marche pas chez moi, on dirait un pb de compatibilité de versions
 
 public class Sprite2 {
     private int id;
