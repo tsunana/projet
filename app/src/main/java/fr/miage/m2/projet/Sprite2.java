@@ -1,5 +1,9 @@
 package fr.miage.m2.projet;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.ServerTimestamp;
 
@@ -7,6 +11,10 @@ import com.google.firebase.firestore.ServerTimestamp;
 //j'ai l'impression que ça ne marche pas chez moi, on dirait un pb de compatibilité de versions
 
 public class Sprite2 {
+
+    private GeoPoint geo_point;
+    private @ServerTimestamp String timestamp;
+
     private int id;
     private String name;
     // Coordonnées du sprite
@@ -14,20 +22,21 @@ public class Sprite2 {
     private float y;
 
     // Largeur et hauteur du sprite
-    private int width;
-    private int height;
+    //private int width;
+    //private int height;
 
     // Image du sprite
     private Bitmap image;
 
-    public Sprite2(int id, String name, float x, float y, int width, int height, Bitmap image) {
+    public Sprite2(int id, String name, GeoPoint geo_point, Bitmap image) {
         this.id = id;
         this.name = name;
-        this.x = x;
-        this.y = y;
+        this.geo_point = geo_point;
+        //this.x = x;
+        //this.y = y;
         this.timestamp = timestamp;
-        this.width = width;
-        this.height = height;
+        //this.width = width;
+        //this.height = height;
         this.image = image;
     }
 
@@ -47,7 +56,7 @@ public class Sprite2 {
         this.name = name;
     }
 
-    public float getX() {
+    /*public float getX() {
         return x;
     }
 
@@ -78,7 +87,7 @@ public class Sprite2 {
     public void setHeight(int height) {
         this.height = height;
     }
-
+*/
     public Bitmap getImage() {
         return image;
     }
@@ -95,7 +104,7 @@ public class Sprite2 {
         return "Sprite{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", geo_point=" + geo_point +
+                ", geo_point=" + geo_point  +
                 ", timestamp='" + timestamp + '\'' +
                 '}';
     }
