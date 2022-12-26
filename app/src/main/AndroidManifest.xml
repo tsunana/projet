@@ -2,7 +2,24 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
+         />
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"
+        />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-feature android:name="android.hardware.camera"
+        android:required="true" />
+
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+
+    <!--Permet d'avoir la localisation de l'utilisateur : -->
+
 
     <application
         android:allowBackup="true"
@@ -28,12 +45,28 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="YOUR_API_KEY" />
+            android:value="@string/google_map_api_key" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
         <activity
             android:name=".MapsActivity"
             android:exported="false"
             android:label="@string/title_activity_maps" />
+        <activity
+            android:name=".CameraActivity"
+            android:exported="false"
+            android:label="@string/title_activity_camera" />
+        <activity
+            android:name=".DisplaySpriteActivity"
+            android:exported="false"
+            android:label="@string/title_activity_sprite" />
+        <activity
+            android:name=".CompassActivity"
+            android:exported="false"
+            android:label="@string/title_activity_compass" />
 
         <uses-library android:name="com.google.android.maps" />
 
@@ -49,7 +82,12 @@
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
+
+
         </activity>
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
     </application>
 
 </manifest>

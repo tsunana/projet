@@ -1,4 +1,15 @@
 <resources>
     <string name="app_name">projet</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="google_map_api_key">AIzaSyDOE3lEYgF_1Yuo_nNnRTzncaImJ5fZ848</string>
+    <string name="intent_sprite_list">intent_sprite_list</string>
+    <string name="collection_sprite">Sprite</string>
+    <string name="compass">Compass</string>
+    <string name="capture">Capture</string>
+    <string name="camera_button">Camera button</string>
+    <string name="title_activity_camera">CameraActivity</string>
+    <string name="title_activity_compass">CompassActivity</string>
+    <string name="catch1">Voulez vous attraper ce sprite ?</string>
+    <string name="catch2">Attraper !!!</string>
+    <string name="title_activity_sprite">DisplaySpriteActivity</string>
 </resources>
