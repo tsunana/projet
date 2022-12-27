@@ -1,5 +1,6 @@
 package fr.miage.m2.projet;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
@@ -23,6 +24,7 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,6 +43,7 @@ import java.util.UUID;
 public class DisplaySpriteActivity extends AppCompatActivity implements View.OnClickListener{
     private ImageView btnSaveSprite;
     private TextureView textureView;
+    private TextView textView;
     private Handler mBackgroundHandler;
     private CameraDevice cameraDevice;
     private CameraCaptureSession cameraCaptureSessions;
@@ -60,11 +63,15 @@ public class DisplaySpriteActivity extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sprite);
     }
+        @SuppressLint("WrongViewCast")
         @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btnSaveSprite :
                 takePicture();
+                textView = findViewById(R.id.caught);
+                textView.setText("Feliciation !! Sprite attrapé ");
+
                 break;
         }
 

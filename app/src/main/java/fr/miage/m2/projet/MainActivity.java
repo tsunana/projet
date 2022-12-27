@@ -19,6 +19,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
@@ -58,6 +60,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -72,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Intent i_maps;
     private LatLngBounds mMapBoundaries;
     private Marker mCurrLocationMarker;
+    private ArrayList<Sprite> sprites = new ArrayList<>();
 
 
 
@@ -86,6 +90,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         //mDb = FirebaseFirestore.getInstance();
+
+        //avoir la geolocalisation du device
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
 
@@ -104,9 +110,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
         mMap = googleMap;
-
         Log.d("MainActivity", "getLastKnownLocation: called.");
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -127,6 +131,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                     Log.d("MainActivity", "onComplete: latitude" + geoPoint.getLatitude());
                     Log.d("MainActivity", "onComplete: longitude" + geoPoint.getLongitude());
+
+                    //définir les limites de la maps
                     double bottomBoundary = location.getLatitude() - 0.005;
                     double leftBoundary = location.getLongitude() - 0.005;
                     double topBoundary = location.getLatitude() + 0.005;
@@ -139,18 +145,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundaries,0));
 
                     LatLng myPos = new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude());
-                    LatLng spriteMeca = new LatLng(44.833880, -0.566170);
-                    mMap.addMarker(new MarkerOptions()
-                            .position(spriteMeca).title("Sprite 1").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                    //LatLng spriteMeca = new LatLng(44.833880, -0.566170);
+                    //mMap.addMarker(new MarkerOptions().position(spriteMeca).title("Sprite 1").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                    addSpritesOnMap();
                     mMap.addMarker(new MarkerOptions()
                             .position(myPos)
                             .title("My position"));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(myPos));
                     mMap.getUiSettings().setCompassEnabled(true);
                     Polyline line = mMap.addPolyline(new PolylineOptions()
-                            .add(myPos, spriteMeca)
+                            .add(myPos, sprites.get(0).getLatLng())
                             .width(5)
                             .color(Color.RED));
+
 
 
 
@@ -160,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
+
 
     @Override
     public void onLocationChanged(Location location) {
@@ -210,6 +218,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
+
+
+    private ArrayList<Sprite> addSpritesOnMap(){
+        GeoPoint geoPoint1 = new GeoPoint(43.3114334,-0.3843101);
+        Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.camera);
+        Sprite asptt = new Sprite("ASPTT", geoPoint1, bitmap1);
+        sprites.add(asptt);
+        mMap.addMarker(new MarkerOptions()
+                .position(asptt.getLatLng()).title("ASPTT").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+
+        return sprites;
+    }
+
 
     @Override
     public void onClick(View view) {

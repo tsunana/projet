@@ -16,6 +16,7 @@ public class Sprite2 {
     private @ServerTimestamp String timestamp;
 
     private int id;
+    private static int incrId = 1;
     private String name;
     // Coordonnées du sprite
     private float x;
@@ -28,8 +29,9 @@ public class Sprite2 {
     // Image du sprite
     private Bitmap image;
 
-    public Sprite2(int id, String name, GeoPoint geo_point, Bitmap image) {
-        this.id = id;
+    public Sprite2(String name, GeoPoint geo_point, Bitmap image) {
+        this.id = incrId;
+        incrId++;
         this.name = name;
         this.geo_point = geo_point;
         //this.x = x;
