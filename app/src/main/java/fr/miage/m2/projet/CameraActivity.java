@@ -29,6 +29,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
@@ -121,7 +122,9 @@ public class CameraActivity extends AppCompatActivity {
 
                 switch(view.getId()){
                     case R.id.btnCapture :
-                        takePicture();
+                        //takePicture();
+                        //int rotation = getWindowManager().getDefaultDisplay().getRotation();
+                        //i_displaySprite.putExtra("orientation", ORIENTATIONS.get(rotation));
                         startActivity(i_displaySprite);
 
                 }
@@ -160,6 +163,10 @@ public class CameraActivity extends AppCompatActivity {
             //Check orientation base on device
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
+            Toast.makeText(this, "orientation : "+ ORIENTATIONS.get(rotation),
+                    Toast.LENGTH_LONG).show();
+            Log.d("CameraActivity", "orientation : " + ORIENTATIONS.get(rotation));
+
 
             file = new File(Environment.getExternalStorageDirectory() + "/" + UUID.randomUUID().toString() + ".jpg");
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {

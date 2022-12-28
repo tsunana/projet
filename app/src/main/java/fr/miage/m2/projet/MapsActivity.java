@@ -81,6 +81,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             buildGoogleApiClient();
             mMap.setMyLocationEnabled(true);
         }
+        LocationManager locationManager = (LocationManager)
+                getSystemService(Context.LOCATION_SERVICE);
+        String provider = locationManager.getBestProvider(new Criteria(), true);
+
+        Location location = locationManager.getLastKnownLocation(provider);
+
+        double bottomBoundary = location.getLatitude() - 0.0001;
+        double leftBoundary = location.getLongitude() - 0.0001;
+        double topBoundary = location.getLatitude() + 0.0001;
+        double rightBoundary = location.getLongitude() + 0.0001;
+        mMapBoundaries = new LatLngBounds(
+                new LatLng(bottomBoundary,leftBoundary),
+                new LatLng(topBoundary,rightBoundary)
+        );
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundaries,0));
+
     }
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -92,10 +109,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void setCameraView(Location location){
-        double bottomBoundary = location.getLatitude() - 0.001;
-        double leftBoundary = location.getLongitude() - 0.001;
-        double topBoundary = location.getLatitude() + 0.001;
-        double rightBoundary = location.getLongitude() + 0.001;
+        double bottomBoundary = location.getLatitude() - 0.0001;
+        double leftBoundary = location.getLongitude() - 0.0001;
+        double topBoundary = location.getLatitude() + 0.0001;
+        double rightBoundary = location.getLongitude() + 0.0001;
         mMapBoundaries = new LatLngBounds(
                 new LatLng(bottomBoundary,leftBoundary),
                 new LatLng(topBoundary,rightBoundary)
@@ -124,10 +141,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         //setCameraView(location);
-        double bottomBoundary = location.getLatitude() - 0.001;
-        double leftBoundary = location.getLongitude() - 0.001;
-        double topBoundary = location.getLatitude() + 0.001;
-        double rightBoundary = location.getLongitude() + 0.001;
+        double bottomBoundary = location.getLatitude() - 0.00001;
+        double leftBoundary = location.getLongitude() - 0.0001;
+        double topBoundary = location.getLatitude() + 0.0001;
+        double rightBoundary = location.getLongitude() + 0.0001;
         mMapBoundaries = new LatLngBounds(
                 new LatLng(bottomBoundary,leftBoundary),
                 new LatLng(topBoundary,rightBoundary)

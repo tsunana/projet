@@ -3,7 +3,8 @@ package fr.miage.m2.projet;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-import com.google.firebase.Timestamp;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.ServerTimestamp;
 
@@ -14,6 +15,7 @@ public class Sprite2 {
 
     private GeoPoint geo_point;
     private @ServerTimestamp String timestamp;
+    private MarkerOptions marker;
 
     private int id;
     private static int incrId = 1;
@@ -29,7 +31,7 @@ public class Sprite2 {
     // Image du sprite
     private Bitmap image;
 
-    public Sprite2(String name, GeoPoint geo_point, Bitmap image) {
+    public Sprite2(String name, GeoPoint geo_point, Bitmap image, MarkerOptions marker) {
         this.id = incrId;
         incrId++;
         this.name = name;
@@ -40,6 +42,8 @@ public class Sprite2 {
         //this.width = width;
         //this.height = height;
         this.image = image;
+        this.marker = marker;
+
     }
 
     public int getId() {
@@ -98,6 +102,19 @@ public class Sprite2 {
         this.image = image;
     }
 
+    public GeoPoint getGeo_point() {
+        return geo_point;
+    }
+
+    public void setGeo_point(GeoPoint geo_point) {
+        this.geo_point = geo_point;
+    }
+
+    public LatLng getLatLng(){
+        LatLng sLatLng = new LatLng(this.getGeo_point().getLatitude(), this.getGeo_point().getLongitude());
+        return sLatLng;
+    }
+
     public void draw(Canvas canvas){
         canvas.drawBitmap(image,x,y,null);
     }
@@ -109,6 +126,15 @@ public class Sprite2 {
                 ", geo_point=" + geo_point  +
                 ", timestamp='" + timestamp + '\'' +
                 '}';
+    }
+
+    public void setMarker(MarkerOptions marker) {
+        this.marker = marker;
+    }
+
+
+    public MarkerOptions getMarker(){
+        return this.marker;
     }
 }
 

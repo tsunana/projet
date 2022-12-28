@@ -56,7 +56,7 @@ public class CompassActivity extends AppCompatActivity
             return;
         }
 
-        Log.i(TAG, "will set rotation from " + currentAzimuth + " to " + azimuth);
+        //Log.i(TAG, "will set rotation from " + currentAzimuth + " to " + azimuth);
 
         Animation an = new RotateAnimation(-currentAzimuth, -azimuth, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         currentAzimuth = azimuth;
@@ -78,7 +78,7 @@ public class CompassActivity extends AppCompatActivity
                 mGravity[1] = alpha * mGravity[1] + (1 - alpha) * event.values[1];
                 mGravity[2] = alpha * mGravity[2] + (1 - alpha) * event.values[2];
 
-                Log.e(TAG, Float.toString(mGravity[0]));
+                //Log.e(TAG, Float.toString(mGravity[0]));
             }
 
             if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {

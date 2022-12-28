@@ -1,19 +1,10 @@
 package fr.miage.m2.projet;
 
-import static fr.miage.m2.projet.Constants.ERROR_DIALOG_REQUEST;
-
-import static fr.miage.m2.projet.Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
-import static fr.miage.m2.projet.Constants.PERMISSIONS_REQUEST_ENABLE_GPS;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -27,22 +18,20 @@ import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApi;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -59,23 +48,26 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnMapReadyCallback, LocationListener {
     private FloatingActionButton nav;
+    private FloatingActionButton opencam;
     private FusedLocationProviderClient mFusedLocationClient;
     private FirebaseFirestore mDb;
-    private Sprite mSprite;
+    private Sprite sprite;
+    private SpriteDAO spriteDao;
     private Intent i_camera;
     private Intent i_maps;
     private LatLngBounds mMapBoundaries;
-    private Marker mCurrLocationMarker;
+    private MarkerOptions mCurrLocationMarker;
     private ArrayList<Sprite> sprites = new ArrayList<>();
+    private GoogleApi mGoogleApiClient;
+    private LocationRequest locationRequest;
 
 
 
@@ -85,22 +77,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        spriteDao = new SpriteDAO(getApplicationContext());
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-        //mDb = FirebaseFirestore.getInstance();
+
+        if(checkGooglePlayServices()){
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
+
+        } else{
+            Toast.makeText(this,"Google Play Services Not Available",Toast.LENGTH_SHORT).show();
+        }
+       //mDb = FirebaseFirestore.getInstance();
 
         //avoir la geolocalisation du device
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        opencam = findViewById(R.id.opencam);
+        opencam.setVisibility(View.INVISIBLE);
 
 
 
     }
 
+    private boolean checkGooglePlayServices(){
+        GoogleApiAvailability gApiAv = GoogleApiAvailability.getInstance();
+        int res = gApiAv.isGooglePlayServicesAvailable(this);
+        if(res == ConnectionResult.SUCCESS){
+            return true;
+
+        } else if (gApiAv.isUserResolvableError(res)){
+            Dialog dialog = gApiAv.getErrorDialog(this, res, 2021, new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialogInterface) {
+                    Toast.makeText(MainActivity.this, "User Canceled Dialog", Toast.LENGTH_SHORT).show();
+                }
+            });
+            dialog.show();
+        }
+        return false;
+    }
+
+
+
 
     private void saveSpriteLocation() {
-        if (mSprite != null) {
+        if (sprite != null) {
             DocumentReference locationRef = mDb.
                     collection(getString(R.string.collection_sprite)).document();
         }
@@ -111,17 +132,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mMap.getUiSettings().setCompassEnabled(true);
         Log.d("MainActivity", "getLastKnownLocation: called.");
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
+        mMap.setMyLocationEnabled(true);
         mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
@@ -133,10 +150,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.d("MainActivity", "onComplete: longitude" + geoPoint.getLongitude());
 
                     //définir les limites de la maps
-                    double bottomBoundary = location.getLatitude() - 0.005;
-                    double leftBoundary = location.getLongitude() - 0.005;
-                    double topBoundary = location.getLatitude() + 0.005;
-                    double rightBoundary = location.getLongitude() + 0.0005;
+                    double bottomBoundary = location.getLatitude() - 0.00001;
+                    double leftBoundary = location.getLongitude() - 0.00001;
+                    double topBoundary = location.getLatitude() + 0.00001;
+                    double rightBoundary = location.getLongitude() + 0.00001;
                     mMapBoundaries = new LatLngBounds(
                             new LatLng(bottomBoundary,leftBoundary),
                             new LatLng(topBoundary,rightBoundary)
@@ -147,19 +164,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     LatLng myPos = new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude());
                     //LatLng spriteMeca = new LatLng(44.833880, -0.566170);
                     //mMap.addMarker(new MarkerOptions().position(spriteMeca).title("Sprite 1").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-                    addSpritesOnMap();
+                    sprites = addSpritesOnMap();
+                    mCurrLocationMarker =  new MarkerOptions()
+                            .title("My position");
                     mMap.addMarker(new MarkerOptions()
                             .position(myPos)
-                            .title("My position"));
+                            );
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(myPos));
                     mMap.getUiSettings().setCompassEnabled(true);
-                    Polyline line = mMap.addPolyline(new PolylineOptions()
-                            .add(myPos, sprites.get(0).getLatLng())
-                            .width(5)
-                            .color(Color.RED));
-
-
-
+                    sprites.get(0).getName();
+                    /*for(int i=0; i <sprites.size();i++){
+                        Polyline line = mMap.addPolyline(new PolylineOptions()
+                                .add(myPos, sprites.get(i).getLatLng())
+                                .width(5)
+                                .color(Color.RED));
+                        checkLocationSprite(mCurrLocationMarker,sprites.get(i).getMarker());
+                    }*/
 
                 }
             }
@@ -171,15 +191,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onLocationChanged(Location location) {
-
-
         if (mCurrLocationMarker != null) {
-            mCurrLocationMarker.remove();
+            //mCurrLocationMarker.remove();
         }
 //Showing Current Location Marker on Map
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        LatLng myPos = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
+        markerOptions.position(myPos);
+
+
         LocationManager locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
         String provider = locationManager.getBestProvider(new Criteria(), true);
@@ -203,30 +223,69 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String state = listAddresses.get(0).getAdminArea();
                     String country = listAddresses.get(0).getCountryName();
                     String subLocality = listAddresses.get(0).getSubLocality();
-                    markerOptions.title("" + latLng + "," + subLocality + "," + state
+                    markerOptions.title("" + myPos + "," + subLocality + "," + state
                             + "," + country);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         mMap.addMarker(markerOptions);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(myPos));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
 
     }
 
+    private void checkLocationSprite(MarkerOptions myPos, MarkerOptions sprite){
+        if(myPos.equals(sprite)){
+            opencam.setVisibility(View.VISIBLE);
 
+        }
+
+
+    }
+
+
+    public byte[] getBytes(Bitmap image) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.PNG, 0, stream);
+        return stream.toByteArray();
+    }
     private ArrayList<Sprite> addSpritesOnMap(){
         GeoPoint geoPoint1 = new GeoPoint(43.3114334,-0.3843101);
         Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.camera);
-        Sprite asptt = new Sprite("ASPTT", geoPoint1, bitmap1);
+
+        GeoPoint geoPoint2 = new GeoPoint(43.30260467529297,-0.3971642553806305);
+        Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), R.drawable.camera);
+
+
+
+        MarkerOptions aspttM = new MarkerOptions().title("ASPTT").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+        Sprite asptt = new Sprite("ASPTT", geoPoint1.getLatitude(), geoPoint1.getLongitude(), getBytes(bitmap1));
+        spriteDao.addSprite(asptt);
+        asptt.setMarker(aspttM);
+        mMap.addMarker(aspttM
+                .position(asptt.getLatLng()));
+
+        MarkerOptions jejeM = new MarkerOptions().title("jeje").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+        Sprite jeje = new Sprite("jeje", geoPoint2.getLatitude(),geoPoint2.getLongitude(),getBytes(bitmap2));
+
+        mMap.addMarker(jejeM
+                .position(jeje.getLatLng()).title("jeje").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+
+
+        jeje.setMarker(jejeM);
+        spriteDao.addSprite(asptt);
+        spriteDao.addSprite(jeje);
+        //sprites.add(asptt);
+        //sprites.add(jeje);
+
         sprites.add(asptt);
-        mMap.addMarker(new MarkerOptions()
-                .position(asptt.getLatLng()).title("ASPTT").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+        sprites.add(jeje);
 
         return sprites;
     }
