@@ -3,6 +3,7 @@ package fr.miage.m2.projet;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -13,19 +14,24 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApi;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -54,7 +60,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnMapReadyCallback, LocationListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnMapReadyCallback, LocationListener,GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener{
     private FloatingActionButton nav;
     private FloatingActionButton opencam;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -65,9 +72,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Intent i_maps;
     private LatLngBounds mMapBoundaries;
     private MarkerOptions mCurrLocationMarker;
+    private Marker mCurrLocMarker;
+    private Polyline line;
     private ArrayList<Sprite> sprites = new ArrayList<>();
-    private GoogleApi mGoogleApiClient;
-    private LocationRequest locationRequest;
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
 
 
 
@@ -91,9 +100,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
        //mDb = FirebaseFirestore.getInstance();
 
         //avoir la geolocalisation du device
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         opencam = findViewById(R.id.opencam);
-        opencam.setVisibility(View.INVISIBLE);
+        //opencam.setVisibility(View.INVISIBLE);
 
 
 
@@ -138,7 +148,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+        LocationManager locationManager = (LocationManager)
+                getSystemService(Context.LOCATION_SERVICE);
+        String provider = locationManager.getBestProvider(new Criteria(), true);
+
+        Location location = locationManager.getLastKnownLocation(provider);
+
         mMap.setMyLocationEnabled(true);
+        buildGoogleApiClient();
         mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
@@ -162,42 +179,72 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundaries,0));
 
                     LatLng myPos = new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude());
-                    //LatLng spriteMeca = new LatLng(44.833880, -0.566170);
-                    //mMap.addMarker(new MarkerOptions().position(spriteMeca).title("Sprite 1").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                     sprites = addSpritesOnMap();
+
                     mCurrLocationMarker =  new MarkerOptions()
                             .title("My position");
-                    mMap.addMarker(new MarkerOptions()
+                    mCurrLocMarker = mMap.addMarker(mCurrLocationMarker
                             .position(myPos)
                             );
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(myPos));
                     mMap.getUiSettings().setCompassEnabled(true);
-                    sprites.get(0).getName();
-                    /*for(int i=0; i <sprites.size();i++){
-                        Polyline line = mMap.addPolyline(new PolylineOptions()
-                                .add(myPos, sprites.get(i).getLatLng())
-                                .width(5)
-                                .color(Color.RED));
-                        checkLocationSprite(mCurrLocationMarker,sprites.get(i).getMarker());
-                    }*/
+
+
 
                 }
             }
         });
 
 
+
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        //met a jour la position toutes les 5 secondes
+        mLocationRequest = new LocationRequest() ;
+        mLocationRequest.setInterval(1000);
+        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+                    mLocationRequest, this);
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
     }
 
 
     @Override
     public void onLocationChanged(Location location) {
-        if (mCurrLocationMarker != null) {
-            //mCurrLocationMarker.remove();
+
+        if (mCurrLocMarker != null) {
+            mCurrLocMarker.remove();
         }
+        if(line != null) {
+            line.remove();
+        }
+
 //Showing Current Location Marker on Map
         LatLng myPos = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
+        PolylineOptions lineOptions = new PolylineOptions();
         markerOptions.position(myPos);
+
 
 
         LocationManager locationManager = (LocationManager)
@@ -230,18 +277,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 e.printStackTrace();
             }
         }
-
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-        mMap.addMarker(markerOptions);
+        //mMap.addMarker(markerOptions);
+        mCurrLocMarker = mMap.addMarker(markerOptions);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(myPos));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        //ajouter et mettre à jour l'itinéraire
+        line = mMap.addPolyline(lineOptions
+                    .add(myPos, sprites.get(0).getLatLng())
+                    .width(5)
+                    .color(Color.RED));
+        checkLocationSprite(mCurrLocMarker,sprites.get(0).getMarker());
+
 
 
     }
 
-    private void checkLocationSprite(MarkerOptions myPos, MarkerOptions sprite){
-        if(myPos.equals(sprite)){
+    private void checkLocationSprite(Marker myPos, Marker sprite){
+        if(myPos.getPosition() == sprite.getPosition()){
             opencam.setVisibility(View.VISIBLE);
 
         }
@@ -264,18 +319,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-        MarkerOptions aspttM = new MarkerOptions().title("ASPTT").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+        MarkerOptions aspttMo = new MarkerOptions().title("ASPTT").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
         Sprite asptt = new Sprite("ASPTT", geoPoint1.getLatitude(), geoPoint1.getLongitude(), getBytes(bitmap1));
         spriteDao.addSprite(asptt);
-        asptt.setMarker(aspttM);
-        mMap.addMarker(aspttM
-                .position(asptt.getLatLng()));
 
-        MarkerOptions jejeM = new MarkerOptions().title("jeje").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+        Marker aspttM = mMap.addMarker(aspttMo
+                .position(asptt.getLatLng()));
+        asptt.setMarker(aspttM);
+
+        MarkerOptions jejeMo = new MarkerOptions().title("jeje").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
         Sprite jeje = new Sprite("jeje", geoPoint2.getLatitude(),geoPoint2.getLongitude(),getBytes(bitmap2));
 
-        mMap.addMarker(jejeM
+        Marker jejeM = mMap.addMarker(jejeMo
                 .position(jeje.getLatLng()).title("jeje").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+
+        Bitmap img = BitmapFactory.decodeFile("D:\\MIAGE\\M2_MIAGE\\S1\\PAM\\app\\src\\main\\res\\drawable\\salameche.png");
+
+        asptt.setImage(img);
 
 
         jeje.setMarker(jejeM);
@@ -295,10 +355,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         i_camera = new Intent(this, CameraActivity.class);
         i_maps = new Intent(this, MapsActivity.class);
+        String path = MediaStore.Images.Media.insertImage(getContentResolver(), sprites.get(0).getImage(), "img", null);
+        Uri uri = Uri.parse(path);
+        //Intent intent = new Intent(Intent.ACTION_SEND);
+        //intent.setType("image/png");
+        //intent.putExtra(Intent.EXTRA_STREAM, uri);
 
         switch (view.getId()) {
             case R.id.opencam:
-              startActivity(i_camera);
+                i_camera.putExtra("img",uri);
+                startActivity(i_camera);
                 break;
             case R.id.nav:
                 startActivity(i_maps);
@@ -306,6 +372,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         }
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }
 

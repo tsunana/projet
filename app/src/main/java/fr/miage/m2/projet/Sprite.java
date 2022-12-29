@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.GeoPoint;
 
@@ -17,7 +18,7 @@ public class Sprite {
 
     private GeoPoint geo_point;
     //private @ServerTimestamp String timestamp;
-    private MarkerOptions marker;
+    private Marker marker;
 
     private int id;
     private static int incrId = 1;
@@ -131,12 +132,12 @@ public class Sprite {
                 '}';
     }
 
-    public void setMarker(MarkerOptions marker) {
+    public void setMarker(Marker marker) {
         this.marker = marker;
     }
 
 
-    public MarkerOptions getMarker(){
+    public Marker getMarker(){
         return this.marker;
     }
 }

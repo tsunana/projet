@@ -2,6 +2,9 @@ package fr.miage.m2.projet;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -44,10 +47,12 @@ public class DisplaySpriteActivity extends AppCompatActivity implements View.OnC
     private ImageView btnSaveSprite;
     private TextureView textureView;
     private TextView textView;
+    private ImageView imageView;
     private Handler mBackgroundHandler;
     private CameraDevice cameraDevice;
     private CameraCaptureSession cameraCaptureSessions;
     private CaptureRequest.Builder captureRequestBuilder;
+    private Intent i_img = new Intent();
     private Size imageDimension;
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     static {
@@ -62,6 +67,7 @@ public class DisplaySpriteActivity extends AppCompatActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sprite);
+        i_img=getIntent();
     }
         @SuppressLint("WrongViewCast")
         @Override
@@ -71,7 +77,10 @@ public class DisplaySpriteActivity extends AppCompatActivity implements View.OnC
                 takePicture();
                 textView = findViewById(R.id.caught);
                 textView.setText("Feliciation !! Sprite attrapé ");
+                imageView = findViewById(R.id.sprite);
+                //Bitmap bmp = BitmapFactory.decodeByteArray(getIntent().getByteArrayExtra("img"), 0, getIntent().getByteArrayExtra("img").length);
 
+                //imageView.setImageBitmap(bmp);
                 break;
         }
 

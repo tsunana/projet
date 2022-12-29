@@ -7,18 +7,19 @@
 
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/sprite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         tools:layout_editor_absoluteX="140dp"
         tools:layout_editor_absoluteY="172dp"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:srcCompat="@drawable/salameche"/>
+
 
     <TextView
         android:id="@+id/caught"
         android:layout_width="wrap_content"
-        android:layout_height="200dp"
+        android:layout_height="300dp"
         android:layout_centerInParent="true"
         android:text="@string/catch1" />
 

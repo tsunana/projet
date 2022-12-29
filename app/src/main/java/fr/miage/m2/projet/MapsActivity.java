@@ -87,10 +87,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Location location = locationManager.getLastKnownLocation(provider);
 
-        double bottomBoundary = location.getLatitude() - 0.0001;
-        double leftBoundary = location.getLongitude() - 0.0001;
-        double topBoundary = location.getLatitude() + 0.0001;
-        double rightBoundary = location.getLongitude() + 0.0001;
+        double bottomBoundary = location.getLatitude() - 0.00001;
+        double leftBoundary = location.getLongitude() - 0.00001;
+        double topBoundary = location.getLatitude() + 0.00001;
+        double rightBoundary = location.getLongitude() + 0.00001;
         mMapBoundaries = new LatLngBounds(
                 new LatLng(bottomBoundary,leftBoundary),
                 new LatLng(topBoundary,rightBoundary)
@@ -109,10 +109,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void setCameraView(Location location){
-        double bottomBoundary = location.getLatitude() - 0.0001;
-        double leftBoundary = location.getLongitude() - 0.0001;
-        double topBoundary = location.getLatitude() + 0.0001;
-        double rightBoundary = location.getLongitude() + 0.0001;
+        double bottomBoundary = location.getLatitude() - 0.00001;
+        double leftBoundary = location.getLongitude() - 0.00001;
+        double topBoundary = location.getLatitude() + 0.00001;
+        double rightBoundary = location.getLongitude() + 0.00001;
         mMapBoundaries = new LatLngBounds(
                 new LatLng(bottomBoundary,leftBoundary),
                 new LatLng(topBoundary,rightBoundary)
@@ -140,18 +140,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
-        //setCameraView(location);
-        double bottomBoundary = location.getLatitude() - 0.00001;
-        double leftBoundary = location.getLongitude() - 0.0001;
-        double topBoundary = location.getLatitude() + 0.0001;
-        double rightBoundary = location.getLongitude() + 0.0001;
-        mMapBoundaries = new LatLngBounds(
-                new LatLng(bottomBoundary,leftBoundary),
-                new LatLng(topBoundary,rightBoundary)
-        );
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundaries,0));
-
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
@@ -192,7 +180,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+        //mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
         if (mGoogleApiClient != null) {
             FusedLocationProviderClient mFused = LocationServices.getFusedLocationProviderClient(this);
         }

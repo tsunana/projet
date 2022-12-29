@@ -54,6 +54,7 @@ public class CameraActivity extends AppCompatActivity {
     private CompassActivity compassActivity;
     private ImageView btnCapture;
     private TextureView textureView;
+    private Intent i_img = new Intent();
 
     //Check state orientation of output image
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
@@ -106,6 +107,8 @@ public class CameraActivity extends AppCompatActivity {
         compassActivity = new CompassActivity(getApplicationContext());
         compassActivity.compass = findViewById(R.id.imageView);
 
+        i_img = getIntent();
+
         textureView = findViewById(R.id.textureView);
         //From Java 1.4 , you can use keyword 'assert' to check expression true or false
         assert textureView != null;
@@ -122,6 +125,7 @@ public class CameraActivity extends AppCompatActivity {
 
                 switch(view.getId()){
                     case R.id.btnCapture :
+                        i_displaySprite.putExtra("img",i_img.getExtras());
                         //takePicture();
                         //int rotation = getWindowManager().getDefaultDisplay().getRotation();
                         //i_displaySprite.putExtra("orientation", ORIENTATIONS.get(rotation));

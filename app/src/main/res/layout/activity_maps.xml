@@ -36,11 +36,12 @@
             android:clickable="true"
             android:onClick="onClick"
             app:srcCompat="@android:drawable/ic_dialog_map" />
-        <ListView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:text="@string/instruction"
             android:id="@+id/list">
-        </ListView>
+        </TextView>
     </LinearLayout>
 
     <LinearLayout

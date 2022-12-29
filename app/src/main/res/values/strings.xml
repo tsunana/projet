@@ -12,4 +12,5 @@
     <string name="catch1">Voulez vous attraper ce sprite ?</string>
     <string name="catch2">Attraper !!!</string>
     <string name="title_activity_sprite">DisplaySpriteActivity</string>
+    <string name="instruction">Bienvenue ! Un Miagémon est apparu ! Allez le capturer au niveau du marker bleu en appuyant sur l\'icone caméra ! Bonne chance :)</string>
 </resources>
