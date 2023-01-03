@@ -6,48 +6,60 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
+
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1.0"
-        android:orientation="vertical" >
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="30"
-            >
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/instruction"
-                ></TextView>
+        android:orientation="vertical"
+        >
 
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textSize="45px"
+            android:text="@string/instruction"
+            android:layout_marginTop="30dp"
+            />
 
-        </RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/near"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textSize="40px"
+            android:textColor="@color/red"
+            android:textStyle="bold"
+            android:text="@string/near"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="50dp"
+            />
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/opencam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="50dp"
             android:clickable="true"
             android:onClick="onClick"
             app:srcCompat="@drawable/cameralogo3" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/nav"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:onClick="onClick"
-            app:srcCompat="@android:drawable/ic_dialog_map" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/instruction"
-            ></TextView>
+
+
+
+
+
     </LinearLayout>
+
+
 
     <LinearLayout
         android:layout_width="match_parent"

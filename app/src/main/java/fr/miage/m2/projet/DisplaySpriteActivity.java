@@ -41,6 +41,8 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 public class DisplaySpriteActivity extends AppCompatActivity implements View.OnClickListener{
@@ -52,7 +54,7 @@ public class DisplaySpriteActivity extends AppCompatActivity implements View.OnC
     private CameraDevice cameraDevice;
     private CameraCaptureSession cameraCaptureSessions;
     private CaptureRequest.Builder captureRequestBuilder;
-    private Intent i_img = new Intent();
+    //private Bitmap img = new Intent();
     private Size imageDimension;
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     static {
@@ -64,23 +66,44 @@ public class DisplaySpriteActivity extends AppCompatActivity implements View.OnC
 
     //Save to FILE
     private File file;
+    private Intent i;
+    private Intent i_maps;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sprite);
-        i_img=getIntent();
+        i= getIntent();
     }
         @SuppressLint("WrongViewCast")
         @Override
     public void onClick(View view) {
-        switch (view.getId()){
+            i_maps = new Intent(this, MainActivity.class);
+            String fileName = i.getStringExtra("img");
+            ArrayList<Sprite> sprites = getIntent().getParcelableArrayListExtra("key");
+
+            //Toast.makeText(this, fileName, Toast.LENGTH_SHORT).show();
+
+
+            switch (view.getId()){
             case R.id.btnSaveSprite :
-                takePicture();
+
                 textView = findViewById(R.id.caught);
                 textView.setText("Feliciation !! Sprite attrapé ");
                 imageView = findViewById(R.id.sprite);
-                //Bitmap bmp = BitmapFactory.decodeByteArray(getIntent().getByteArrayExtra("img"), 0, getIntent().getByteArrayExtra("img").length);
 
-                //imageView.setImageBitmap(bmp);
+
+                int resId = getResources().getIdentifier(fileName, "drawable", getPackageName());
+
+                imageView.setImageResource(resId);
+                takePicture();
+                sprites.remove(0);
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        startActivity(i_maps);
+                    }
+                }, 3000);
+
                 break;
         }
 

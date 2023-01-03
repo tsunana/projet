@@ -3,6 +3,8 @@ package fr.miage.m2.projet;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -14,7 +16,7 @@ import java.io.ByteArrayOutputStream;
 //dans la classe build.grade, ajouter implementation 'com.android.support:appcompat-v7:28.0.0'
 //j'ai l'impression que ça ne marche pas chez moi, on dirait un pb de compatibilité de versions
 
-public class Sprite {
+public class Sprite implements Parcelable {
 
     private GeoPoint geo_point;
     //private @ServerTimestamp String timestamp;
@@ -33,37 +35,32 @@ public class Sprite {
 
     // Image du sprite
     private byte[] image;
+    private int imageId;
 
-    public Sprite(String name, double latitude, double longitude, byte[] image) {
+    public Sprite(String name, double latitude, double longitude) {
         this.id = incrId;
         incrId++;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.image = image;
-        // convert from byte array to bitmap
 
         this.marker = marker;
         setGeo_point(latitude,longitude);
 
     }
-    public Bitmap getImage(byte[] image) {
-        return BitmapFactory.decodeByteArray(image, 0, image.length);
-    }
-    // convert from bitmap to byte array
-    public byte[] getBytes() {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        getImage().compress(Bitmap.CompressFormat.PNG, 0, stream);
-        return stream.toByteArray();
+
+    public Sprite() {
+        this.id = incrId;
+        incrId++;
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+
+        this.marker = marker;
+        setGeo_point(latitude,longitude);
+
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
-    }
-
-    public Bitmap getImage(){
-        return BitmapFactory.decodeByteArray(image, 0, image.length);
-    }
 
     public double getLatitude() {
         return latitude;
@@ -81,8 +78,6 @@ public class Sprite {
         this.longitude = longitude;
     }
 
-
-
     public int getId() {
         return id;
     }
@@ -99,13 +94,6 @@ public class Sprite {
         this.name = name;
     }
 
-
-
-
-    public void setImage(Bitmap image) {
-        this.image = getBytes();
-    }
-
     public GeoPoint getGeo_point() {
         return geo_point;
     }
@@ -119,10 +107,15 @@ public class Sprite {
         LatLng sLatLng = new LatLng(this.getLatitude(), this.getLongitude());
         return sLatLng;
     }
-
-    public void draw(Canvas canvas){
-        canvas.drawBitmap(this.getImage(), (float) latitude, (float) longitude,null);
+    public void setMarker(Marker marker) {
+        this.marker = marker;
     }
+
+
+    public Marker getMarker(){
+        return this.marker;
+    }
+
     @Override
     public String toString() {
         return "Sprite{" +
@@ -132,13 +125,56 @@ public class Sprite {
                 '}';
     }
 
-    public void setMarker(Marker marker) {
-        this.marker = marker;
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+
+    }
+
+    public static final Creator<Sprite> CREATOR = new Creator<Sprite>() {
+        @Override
+        public Sprite createFromParcel(Parcel in) {
+            return new Sprite();
+        }
+
+        @Override
+        public Sprite[] newArray(int size) {
+            return new Sprite[size];
+        }
+    };
+
+
+
+    /*
+    public Bitmap getImage(byte[] image) {
+        return BitmapFactory.decodeByteArray(image, 0, image.length);
+    }
+    // convert from bitmap to byte array
+    public byte[] getBytes() {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        getImage().compress(Bitmap.CompressFormat.PNG, 0, stream);
+        return stream.toByteArray();
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
 
-    public Marker getMarker(){
-        return this.marker;
+    public Bitmap getImage(){
+        return BitmapFactory.decodeByteArray(image, 0, image.length);
     }
+     public void setImage(Bitmap image) {
+        this.image = getBytes();
+    }
+
+     public void draw(Canvas canvas){
+        canvas.drawBitmap(this.getImage(), (float) latitude, (float) longitude,null);
+    }*/
+
 }
 

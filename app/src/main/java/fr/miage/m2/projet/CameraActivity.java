@@ -7,6 +7,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -54,6 +55,7 @@ public class CameraActivity extends AppCompatActivity {
     private CompassActivity compassActivity;
     private ImageView btnCapture;
     private TextureView textureView;
+    private Intent intent = new Intent();
     private Intent i_img = new Intent();
 
     //Check state orientation of output image
@@ -114,9 +116,13 @@ public class CameraActivity extends AppCompatActivity {
         assert textureView != null;
         textureView.setSurfaceTextureListener(textureListener);
         btnCapture = findViewById(R.id.btnCapture);
-        Bundle extras= getIntent().getExtras();
+        //Bundle extras= getIntent().getExtras();
 
         i_displaySprite = new Intent(this, DisplaySpriteActivity.class);
+        //if(!ORIENTATIONS.equals(Surface.ROTATION_0) && !ORIENTATIONS.equals(90)){
+         //   btnCapture.setVisibility(View.INVISIBLE);
+
+        //}
 
 
         btnCapture.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +131,15 @@ public class CameraActivity extends AppCompatActivity {
 
                 switch(view.getId()){
                     case R.id.btnCapture :
-                        i_displaySprite.putExtra("img",i_img.getExtras());
+
+
+                        ArrayList<Sprite> sprites = getIntent().getParcelableArrayListExtra("key");
+                        String filePath = i_img.getStringExtra("img");
+
+                        i_displaySprite.putExtra("img",filePath);
+                        //i_displaySprite.putParcelableArrayListExtra("key", sprites);
+
+                        //i_displaySprite.putExtra("sprites",i_img.getStringExtra("sprites"));
                         //takePicture();
                         //int rotation = getWindowManager().getDefaultDisplay().getRotation();
                         //i_displaySprite.putExtra("orientation", ORIENTATIONS.get(rotation));
@@ -341,6 +355,11 @@ public class CameraActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         compassActivity.start();
+        Toast.makeText(this, "Orientez vous à l'Ouest !! ", Toast.LENGTH_SHORT).show();
+
+
+
+
     }
 
     @Override

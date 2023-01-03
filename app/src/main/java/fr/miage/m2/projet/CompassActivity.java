@@ -1,14 +1,17 @@
 package fr.miage.m2.projet;
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,9 +21,12 @@ public class CompassActivity extends AppCompatActivity
         implements SensorEventListener {
 
     private static final String TAG = "Compass";
+    private ImageView btnCapture;
+
     //Correct Declaration
     private Sensor gsensor;
     private Sensor msensor;
+    private Intent i_displaySprite;
 
     private float[] mGravity = new float[3];
     private float[] mGeomagnetic = new float[3];
@@ -38,11 +44,14 @@ public class CompassActivity extends AppCompatActivity
         assert sensorManager != null;
         gsensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         msensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        i_displaySprite = new Intent(this,DisplaySpriteActivity.class);
     }
 
     public void start() {
         sensorManager.registerListener(this, gsensor, SensorManager.SENSOR_DELAY_GAME);
         sensorManager.registerListener(this, msensor, SensorManager.SENSOR_DELAY_GAME);
+
+
     }
 
     public void stop() {
@@ -65,10 +74,17 @@ public class CompassActivity extends AppCompatActivity
         an.setRepeatCount(0);
         an.setFillAfter(true);
         compass.startAnimation(an);
+
+
+        if(currentAzimuth==180){
+            startActivity(i_displaySprite);
+        }
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        // code à exécuter lorsque l'orientation de la boussole change
+
 
         final float alpha = 0.97f;
         synchronized (this) {
@@ -99,11 +115,22 @@ public class CompassActivity extends AppCompatActivity
                 azimuth = (azimuth + 360) % 360;
                 adjustArrow();
             }
+            float azimuth = event.values[0];
+
+
+//ne fonctionne pas.
+            if(azimuth==180){
+                Toast.makeText(this, "SUD", Toast.LENGTH_SHORT).show();
+
+            }
+
         }
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // code à exécuter lorsque la précision de la boussole change
+
 
     }
 }

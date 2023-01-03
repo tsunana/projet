@@ -1,43 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+
+
+
+        <TextView
+            android:id="@+id/caught"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/catch1"
+            android:layout_marginTop="30dp"
+            android:textSize="60px"
+
+            />
 
 
     <ImageView
         android:id="@+id/sprite"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:layout_marginTop="100dp"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/sprite"
         tools:layout_editor_absoluteX="140dp"
-        tools:layout_editor_absoluteY="172dp"
-        app:srcCompat="@drawable/salameche"/>
+        tools:layout_editor_absoluteY="172dp" />
 
-
-    <TextView
-        android:id="@+id/caught"
-        android:layout_width="wrap_content"
-        android:layout_height="300dp"
-        android:layout_centerInParent="true"
-        android:text="@string/catch1" />
 
     <ImageView
         android:id="@+id/btnSaveSprite"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        app:srcCompat="@drawable/cameralogo2"
-        android:layout_marginBottom="50dp"
-        android:onClick="onClick"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="50dp"
+        android:contentDescription="@string/camera_button"
+        android:onClick="onClick"
         android:text="@string/capture"
-        android:contentDescription="@string/camera_button" />
+        app:srcCompat="@drawable/pokeball" />
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:textSize="50px"
         android:text="@string/catch2" />
 
-</RelativeLayout>
+</LinearLayout>

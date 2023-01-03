@@ -26,6 +26,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -55,7 +56,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -64,12 +69,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         GoogleApiClient.OnConnectionFailedListener{
     private FloatingActionButton nav;
     private FloatingActionButton opencam;
+    private TextView near;
     private FusedLocationProviderClient mFusedLocationClient;
     private FirebaseFirestore mDb;
     private Sprite sprite;
     private SpriteDAO spriteDao;
     private Intent i_camera;
     private Intent i_maps;
+    private Intent i_display;
     private LatLngBounds mMapBoundaries;
     private MarkerOptions mCurrLocationMarker;
     private Marker mCurrLocMarker;
@@ -103,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         opencam = findViewById(R.id.opencam);
+        near = findViewById(R.id.near);
         //opencam.setVisibility(View.INVISIBLE);
 
 
@@ -127,15 +135,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return false;
     }
 
-
-
-
-    private void saveSpriteLocation() {
-        if (sprite != null) {
-            DocumentReference locationRef = mDb.
-                    collection(getString(R.string.collection_sprite)).document();
-        }
-    }
 
     //here we are retrieving the location of our device.
 
@@ -289,61 +288,98 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .add(myPos, sprites.get(0).getLatLng())
                     .width(5)
                     .color(Color.RED));
-        checkLocationSprite(mCurrLocMarker,sprites.get(0).getMarker());
-
-
-
+        checkLocationSprite(myPos,sprites.get(0).getLatLng());
     }
 
-    private void checkLocationSprite(Marker myPos, Marker sprite){
-        if(myPos.getPosition() == sprite.getPosition()){
-            opencam.setVisibility(View.VISIBLE);
+    //afficher la camera
+    private void checkLocationSprite(LatLng myPos, LatLng sprite){
+        //if(myPos.getPosition() == sprite.getPosition()){
+         //   opencam.setVisibility(View.VISIBLE);
+        double lat1 = myPos.latitude;
+        double lng1 = myPos.longitude;
+        double lat2 = sprite.latitude;
+        double lng2 = sprite.longitude;
 
+        Location lmyPos = new Location("myPos");
+        lmyPos.setLatitude(lat1);
+        lmyPos.setLongitude(lng1);
+
+        Location lsprite = new Location("lsprite");
+        lsprite.setLatitude(lat2);
+        lsprite.setLongitude(lng2);
+
+        float distance = lmyPos.distanceTo(lsprite);
+
+        if (distance <= 50.0f) {
+            opencam.setVisibility(View.VISIBLE);
+            // les points sont à moins d'un mètre l'un de l'autre
+        } else {
+            opencam.setVisibility(View.INVISIBLE);
+            // les points sont à plus d'un mètre l'un de l'autre
+        }
+        if (distance <= 100.0f) {
+            near.setVisibility(View.VISIBLE);
+            // les points sont à moins d'un mètre l'un de l'autre
+        } else {
+            near.setVisibility(View.INVISIBLE);
+            // les points sont à plus d'un mètre l'un de l'autre
         }
 
-
     }
 
 
-    public byte[] getBytes(Bitmap image) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.PNG, 0, stream);
-        return stream.toByteArray();
-    }
+
     private ArrayList<Sprite> addSpritesOnMap(){
         GeoPoint geoPoint1 = new GeoPoint(43.3114334,-0.3843101);
-        Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.camera);
+        //String img = "sprite" + sprites.get(0).getId();
+        Bitmap img = BitmapFactory.decodeResource(getResources(), R.drawable.sprite1);
+
 
         GeoPoint geoPoint2 = new GeoPoint(43.30260467529297,-0.3971642553806305);
-        Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), R.drawable.camera);
+
+
+        GeoPoint geoPoint3 = new GeoPoint(44.812719792768995,1.6812090790848637);
+        Bitmap img3 = BitmapFactory.decodeResource(getResources(), R.drawable.sprite2);
+
 
 
 
         MarkerOptions aspttMo = new MarkerOptions().title("ASPTT").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-        Sprite asptt = new Sprite("ASPTT", geoPoint1.getLatitude(), geoPoint1.getLongitude(), getBytes(bitmap1));
+        Sprite asptt = new Sprite("ASPTT", geoPoint1.getLatitude(), geoPoint1.getLongitude());
         spriteDao.addSprite(asptt);
+        //asptt.setImage(img);
 
         Marker aspttM = mMap.addMarker(aspttMo
                 .position(asptt.getLatLng()));
         asptt.setMarker(aspttM);
 
         MarkerOptions jejeMo = new MarkerOptions().title("jeje").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-        Sprite jeje = new Sprite("jeje", geoPoint2.getLatitude(),geoPoint2.getLongitude(),getBytes(bitmap2));
+        Sprite jeje = new Sprite("jeje", geoPoint2.getLatitude(),geoPoint2.getLongitude());
 
         Marker jejeM = mMap.addMarker(jejeMo
                 .position(jeje.getLatLng()).title("jeje").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 
-        Bitmap img = BitmapFactory.decodeFile("D:\\MIAGE\\M2_MIAGE\\S1\\PAM\\app\\src\\main\\res\\drawable\\salameche.png");
+        //Bitmap img = BitmapFactory.decodeFile("D:\\MIAGE\\M2_MIAGE\\S1\\PAM\\app\\src\\main\\res\\drawable\\salameche.png");
 
-        asptt.setImage(img);
 
+        MarkerOptions adeleMo = new MarkerOptions().title("jeje").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+        //Sprite adele = new Sprite("adele", geoPoint3.getLatitude(),geoPoint3.getLongitude(),getBytes(img3));
+
+        //Marker adeleM = mMap.addMarker(adeleMo.position(adele.getLatLng()).title("adele").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+
+        //asptt.setImage(img);
+        //adele.setImage(img3);
+        //adele.setMarker(adeleM);
 
         jeje.setMarker(jejeM);
+        //spriteDao.addSprite(adele);
         spriteDao.addSprite(asptt);
         spriteDao.addSprite(jeje);
+
         //sprites.add(asptt);
         //sprites.add(jeje);
 
+        //sprites.add(adele);
         sprites.add(asptt);
         sprites.add(jeje);
 
@@ -354,17 +390,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         i_camera = new Intent(this, CameraActivity.class);
-        i_maps = new Intent(this, MapsActivity.class);
-        String path = MediaStore.Images.Media.insertImage(getContentResolver(), sprites.get(0).getImage(), "img", null);
-        Uri uri = Uri.parse(path);
-        //Intent intent = new Intent(Intent.ACTION_SEND);
-        //intent.setType("image/png");
-        //intent.putExtra(Intent.EXTRA_STREAM, uri);
 
         switch (view.getId()) {
             case R.id.opencam:
-                i_camera.putExtra("img",uri);
-                startActivity(i_camera);
+                    String strSprite = "sprite"+sprites.get(0).getId();
+
+                    //i_camera.putExtra("img", outputFile.getAbsoluteFile());
+                    i_camera.putExtra("img",strSprite);
+                    i_camera.putParcelableArrayListExtra("key", sprites);
+                    //i_camera.putExtra("sprites",sprites);
+                    startActivity(i_camera);
+                    //sprites.remove(0);
+
+                //Toast.makeText(this, "img est null !!!", Toast.LENGTH_SHORT).show();
+
+
+
                 break;
             case R.id.nav:
                 startActivity(i_maps);

@@ -18,7 +18,16 @@ public class SpriteDAO {
             "name",
             "latitude",
             "longitude",
-            "img"
+    };
+
+    String[] projectionLat = {
+
+            "latitude",
+
+    };
+    String[] projectionLong = {
+
+            "longitude",
     };
 
 
@@ -48,7 +57,6 @@ public class SpriteDAO {
         values.put("name", sprite.getName());
         values.put("latitude", sprite.getLatitude());
         values.put("longitude", sprite.getLongitude());
-        values.put("img", sprite.getBytes());
         //on insère l'objet dans la BDD via le ContentValues
         return bdd.insert(TABLE_NAME, null, values);
     }
@@ -71,6 +79,41 @@ public class SpriteDAO {
         return cursorToName(cursor);
     }
 
+    public Sprite getLat(String id) {
+        open();
+        //Récupère dans un Cursor les valeur correspondant à un livre contenu dans la BDD
+        String selection = "ID = ?";
+        String[] selectionArgs = {id};
+        Cursor cursor = bdd.query(
+                TABLE_NAME,
+                projectionLat,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+        System.out.println("ok");
+        return cursorToName(cursor);
+    }
+    public Sprite getLong(String id) {
+        open();
+        //Récupère dans un Cursor les valeur correspondant à un livre contenu dans la BDD
+        String selection = "ID = ?";
+        String[] selectionArgs = {id};
+        Cursor cursor = bdd.query(
+                TABLE_NAME,
+                projectionLong,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+        System.out.println("ok");
+        return cursorToName(cursor);
+    }
+
 
     public Sprite cursorToName(Cursor cursor) {
 
@@ -80,7 +123,7 @@ public class SpriteDAO {
         while (cursor.moveToNext()) {
             //le numéro ISBN est a la postion 1 du tableau (colonne)
             //le titre est a la position  2 du
-            return new Sprite(cursor.getString(1), cursor.getDouble(2),cursor.getDouble(3),cursor.getBlob(4));
+            return new Sprite(cursor.getString(1), cursor.getDouble(2),cursor.getDouble(3));
             //list.add(livre)
         }
 
@@ -93,7 +136,6 @@ public class SpriteDAO {
         values.put("name", sprite.getName());
         values.put("lattitude", sprite.getName());
         values.put("longitude", sprite.getName());
-        values.put("img", image);
         //on insère l'objet dans la BDD via le ContentValues
         return bdd.insert(TABLE_NAME, null, values);
 
