@@ -79,7 +79,7 @@ public class DisplaySpriteActivity extends AppCompatActivity implements View.OnC
     public void onClick(View view) {
             i_maps = new Intent(this, MainActivity.class);
             String fileName = i.getStringExtra("img");
-            ArrayList<Sprite> sprites = getIntent().getParcelableArrayListExtra("key");
+            //ArrayList<Sprite> sprites = getIntent().getParcelableArrayListExtra("key");
 
             //Toast.makeText(this, fileName, Toast.LENGTH_SHORT).show();
 
@@ -96,7 +96,10 @@ public class DisplaySpriteActivity extends AppCompatActivity implements View.OnC
 
                 imageView.setImageResource(resId);
                 takePicture();
-                sprites.remove(0);
+                //SpriteDAO spriteDao = MainActivity.getDao();
+                //spriteDao.getSpriteById(1);
+                Toast.makeText(this, fileName, Toast.LENGTH_SHORT).show();
+                //sprites.remove(0);
                 new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {

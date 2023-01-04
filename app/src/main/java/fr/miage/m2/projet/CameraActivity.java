@@ -133,7 +133,7 @@ public class CameraActivity extends AppCompatActivity {
                     case R.id.btnCapture :
 
 
-                        ArrayList<Sprite> sprites = getIntent().getParcelableArrayListExtra("key");
+                        //ArrayList<Sprite> sprites = getIntent().getParcelableArrayListExtra("key");
                         String filePath = i_img.getStringExtra("img");
 
                         i_displaySprite.putExtra("img",filePath);

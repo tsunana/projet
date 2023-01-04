@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 public class SpriteSQLiteDatabase extends SQLiteOpenHelper {
-    private String query = "CREATE TABLE sprites(id INTEGER PRIMARY KEY AUTOINCREMENT,"+ "name VARCHAR(100), latitude DOUBLE, longitude DOUBLE, img BLOB)";
+    private String query = "CREATE TABLE sprites(id INTEGER PRIMARY KEY AUTOINCREMENT,"+ "name VARCHAR(100), latitude DOUBLE, longitude DOUBLE)";
     public SpriteSQLiteDatabase(@Nullable Context context, @Nullable String name, @Nullable
             android.database.sqlite.SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);

@@ -85,6 +85,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
 
+    String strSprite;
+
+
+
+
 
 
     private GoogleMap mMap;
@@ -111,7 +116,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         opencam = findViewById(R.id.opencam);
         near = findViewById(R.id.near);
+        String name = spriteDao.getSpriteById(1).getName();
+        strSprite = "sprite"+spriteDao.getId(name);
+        //System.out.print(strSprite);
         //opencam.setVisibility(View.INVISIBLE);
+
+        //spriteDao.addSprite(asptt);
+        //spriteDao.addSprite(jeje);
+
+
+        //System.out.println(asptt.getId());
+        //System.out.println(sprites.get(0).toString());
+
 
 
 
@@ -136,6 +152,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+   // public static SpriteDAO getDao(){return spriteDao;}
+
+
     //here we are retrieving the location of our device.
 
     @Override
@@ -143,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mMap = googleMap;
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
-        Log.d("MainActivity", "getLastKnownLocation: called.");
+        //Log.d("MainActivity", "getLastKnownLocation: called.");
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -162,8 +181,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Location location = task.getResult();
 
                     GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                    Log.d("MainActivity", "onComplete: latitude" + geoPoint.getLatitude());
-                    Log.d("MainActivity", "onComplete: longitude" + geoPoint.getLongitude());
+                    //Log.d("MainActivity", "onComplete: latitude" + geoPoint.getLatitude());
+                    //Log.d("MainActivity", "onComplete: longitude" + geoPoint.getLongitude());
 
                     //définir les limites de la maps
                     double bottomBoundary = location.getLatitude() - 0.00001;
@@ -178,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundaries,0));
 
                     LatLng myPos = new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude());
-                    sprites = addSpritesOnMap();
+                    addSpritesOnMap();
 
                     mCurrLocationMarker =  new MarkerOptions()
                             .title("My position");
@@ -285,20 +304,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //ajouter et mettre à jour l'itinéraire
         line = mMap.addPolyline(lineOptions
-                    .add(myPos, sprites.get(0).getLatLng())
+                    .add(myPos, spriteDao.getSpriteById(1).getLatLng())
                     .width(5)
                     .color(Color.RED));
-        checkLocationSprite(myPos,sprites.get(0).getLatLng());
+        checkLocationSprite(myPos,spriteDao.getSpriteById(1).getLatLng());
     }
 
     //afficher la camera
     private void checkLocationSprite(LatLng myPos, LatLng sprite){
-        //if(myPos.getPosition() == sprite.getPosition()){
-         //   opencam.setVisibility(View.VISIBLE);
+
         double lat1 = myPos.latitude;
         double lng1 = myPos.longitude;
-        double lat2 = sprite.latitude;
-        double lng2 = sprite.longitude;
+        //double lat2 = sprite.latitude;
+        //double lng2 = sprite.longitude;
+        double lat2 = spriteDao.getSpriteById(1).getLatitude();
+        double lng2 = spriteDao.getSpriteById(1).getLongitude();
+
 
         Location lmyPos = new Location("myPos");
         lmyPos.setLatitude(lat1);
@@ -329,61 +350,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-    private ArrayList<Sprite> addSpritesOnMap(){
-        GeoPoint geoPoint1 = new GeoPoint(43.3114334,-0.3843101);
-        //String img = "sprite" + sprites.get(0).getId();
-        Bitmap img = BitmapFactory.decodeResource(getResources(), R.drawable.sprite1);
-
-
-        GeoPoint geoPoint2 = new GeoPoint(43.30260467529297,-0.3971642553806305);
-
-
-        GeoPoint geoPoint3 = new GeoPoint(44.812719792768995,1.6812090790848637);
-        Bitmap img3 = BitmapFactory.decodeResource(getResources(), R.drawable.sprite2);
-
-
+    private void addSpritesOnMap(){
+        Sprite asptt = spriteDao.getSpriteById(1);
+        Sprite jeje = spriteDao.getSpriteById(2);
 
 
         MarkerOptions aspttMo = new MarkerOptions().title("ASPTT").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-        Sprite asptt = new Sprite("ASPTT", geoPoint1.getLatitude(), geoPoint1.getLongitude());
-        spriteDao.addSprite(asptt);
-        //asptt.setImage(img);
-
         Marker aspttM = mMap.addMarker(aspttMo
                 .position(asptt.getLatLng()));
-        asptt.setMarker(aspttM);
 
         MarkerOptions jejeMo = new MarkerOptions().title("jeje").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-        Sprite jeje = new Sprite("jeje", geoPoint2.getLatitude(),geoPoint2.getLongitude());
-
         Marker jejeM = mMap.addMarker(jejeMo
                 .position(jeje.getLatLng()).title("jeje").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 
-        //Bitmap img = BitmapFactory.decodeFile("D:\\MIAGE\\M2_MIAGE\\S1\\PAM\\app\\src\\main\\res\\drawable\\salameche.png");
 
-
-        MarkerOptions adeleMo = new MarkerOptions().title("jeje").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-        //Sprite adele = new Sprite("adele", geoPoint3.getLatitude(),geoPoint3.getLongitude(),getBytes(img3));
-
-        //Marker adeleM = mMap.addMarker(adeleMo.position(adele.getLatLng()).title("adele").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-
-        //asptt.setImage(img);
-        //adele.setImage(img3);
-        //adele.setMarker(adeleM);
-
+        asptt.setMarker(aspttM);
         jeje.setMarker(jejeM);
-        //spriteDao.addSprite(adele);
-        spriteDao.addSprite(asptt);
-        spriteDao.addSprite(jeje);
 
-        //sprites.add(asptt);
-        //sprites.add(jeje);
 
-        //sprites.add(adele);
-        sprites.add(asptt);
-        sprites.add(jeje);
-
-        return sprites;
     }
 
 
@@ -393,11 +377,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         switch (view.getId()) {
             case R.id.opencam:
-                    String strSprite = "sprite"+sprites.get(0).getId();
+                    //String strSprite = "sprite"+sprites.get(0).getId();
+
 
                     //i_camera.putExtra("img", outputFile.getAbsoluteFile());
                     i_camera.putExtra("img",strSprite);
-                    i_camera.putParcelableArrayListExtra("key", sprites);
+                    //i_camera.putParcelableArrayListExtra("key", sprites);
                     //i_camera.putExtra("sprites",sprites);
                     startActivity(i_camera);
                     //sprites.remove(0);
@@ -420,139 +405,3 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 }
-
-    /*
-    private boolean mLocationPermissionGranted = false;
-    private static final String TAG = "MainActivity";
-
-    private boolean checkMapServices(){
-        if(isServicesOK()){
-            if(isMapsEnabled()){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void buildAlertMessageNoGps() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("This application requires GPS to work properly, do you want to enable it?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        Intent enableGpsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivityForResult(enableGpsIntent, PERMISSIONS_REQUEST_ENABLE_GPS);
-                    }
-                });
-        final AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-    public boolean isMapsEnabled(){
-        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
-
-        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-            buildAlertMessageNoGps();
-            return false;
-        }
-        return true;
-    }
-
-    private void getLocationPermission() {
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-
-        if (/*ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;*/
-            //getChatrooms();
-       /* } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
-
-    public boolean isServicesOK(){
-        Log.d(TAG, "isServicesOK: checking google services version");
-
-        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MainActivity.this);
-
-        if(available == ConnectionResult.SUCCESS){
-            //everything is fine and the user can make map requests
-            Log.d(TAG, "isServicesOK: Google Play Services is working");
-            return true;
-        }
-        else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
-            //an error occured but we can resolve it
-            Log.d(TAG, "isServicesOK: an error occured but we can fix it");
-            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, available, ERROR_DIALOG_REQUEST);
-            dialog.show();
-        }else{
-            Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show();
-        }
-        return false;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[],
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        mLocationPermissionGranted = false;
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mLocationPermissionGranted = true;
-                }
-            }
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "onActivityResult: called.");
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ENABLE_GPS: {
-                if(mLocationPermissionGranted){
-                    //getChatrooms();
-                }
-                else{
-                    getLocationPermission();
-                }
-            }
-        }
-
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        nav = findViewById(R.id.navigation);
-    }
-
-
-
-        @Override
-    public void onClick(View view) {
-        //Intent i = new Intent(Intent.ACTION_VIEW,
-          //      Uri.parse("google.navigation:q=\t44.823462,\t-0.556514&mode=w"));
-        Intent i = new Intent(this,MapsActivity.class);
-        i.setPackage("com.google.android.apps.maps");
-
-        if(i.resolveActivity(getPackageManager()) !=null){
-            startActivity(i);
-
-        }
-
-
-    }
-    */

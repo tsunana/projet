@@ -12,11 +12,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 
 //dans la classe build.grade, ajouter implementation 'com.android.support:appcompat-v7:28.0.0'
 //j'ai l'impression que ça ne marche pas chez moi, on dirait un pb de compatibilité de versions
 
-public class Sprite implements Parcelable {
+public class Sprite implements Serializable {
 
     private GeoPoint geo_point;
     //private @ServerTimestamp String timestamp;
@@ -38,20 +39,8 @@ public class Sprite implements Parcelable {
     private int imageId;
 
     public Sprite(String name, double latitude, double longitude) {
-        this.id = incrId;
-        incrId++;
-        this.name = name;
-        this.latitude = latitude;
-        this.longitude = longitude;
-
-        this.marker = marker;
-        setGeo_point(latitude,longitude);
-
-    }
-
-    public Sprite() {
-        this.id = incrId;
-        incrId++;
+        //this.id = incrId;
+        //incrId++;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -79,7 +68,7 @@ public class Sprite implements Parcelable {
     }
 
     public int getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(int id) {
@@ -125,27 +114,7 @@ public class Sprite implements Parcelable {
                 '}';
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-
-    }
-
-    public static final Creator<Sprite> CREATOR = new Creator<Sprite>() {
-        @Override
-        public Sprite createFromParcel(Parcel in) {
-            return new Sprite();
-        }
-
-        @Override
-        public Sprite[] newArray(int size) {
-            return new Sprite[size];
-        }
-    };
 
 
 
