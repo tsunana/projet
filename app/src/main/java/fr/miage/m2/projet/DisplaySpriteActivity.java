@@ -79,6 +79,8 @@ public class DisplaySpriteActivity extends AppCompatActivity implements View.OnC
     public void onClick(View view) {
             i_maps = new Intent(this, MainActivity.class);
             String fileName = i.getStringExtra("img");
+            SpriteDAO spriteDao = MainActivity.getDao();
+            String name = spriteDao.getSpriteById(1).getName();
             //ArrayList<Sprite> sprites = getIntent().getParcelableArrayListExtra("key");
 
             //Toast.makeText(this, fileName, Toast.LENGTH_SHORT).show();
@@ -88,7 +90,7 @@ public class DisplaySpriteActivity extends AppCompatActivity implements View.OnC
             case R.id.btnSaveSprite :
 
                 textView = findViewById(R.id.caught);
-                textView.setText("Feliciation !! Sprite attrapé ");
+                textView.setText("Feliciation !! Miagémone [" +name +"] attrapé ");
                 imageView = findViewById(R.id.sprite);
 
 
@@ -96,8 +98,7 @@ public class DisplaySpriteActivity extends AppCompatActivity implements View.OnC
 
                 imageView.setImageResource(resId);
                 takePicture();
-                //SpriteDAO spriteDao = MainActivity.getDao();
-                //spriteDao.getSpriteById(1);
+
                 Toast.makeText(this, fileName, Toast.LENGTH_SHORT).show();
                 //sprites.remove(0);
                 new Timer().schedule(new TimerTask() {

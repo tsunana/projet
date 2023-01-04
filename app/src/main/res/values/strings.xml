@@ -9,8 +9,8 @@
     <string name="camera_button">Camera button</string>
     <string name="title_activity_camera">CameraActivity</string>
     <string name="title_activity_compass">CompassActivity</string>
-    <string name="catch1">Voulez vous attraper ce sprite ?</string>
-    <string name="catch2">Attraper !!!</string>
+    <string name="catch1">Voulez vous attraper ce Miagémone?</string>
+    <string name="catch2">Attraper!</string>
     <string name="title_activity_sprite">DisplaySpriteActivity</string>
     <string name="instruction">Capture les Miagémones qui se trouvent aux emplacements bleus ! Une fois proche, appuie sur l\'icone caméra qui apparaît! Bonne chance :)</string>
     <string name="near">Un Miagémone est à moins de 100m ! </string>
