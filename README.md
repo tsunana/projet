@@ -1,5 +1,15 @@
+
 Premièrement, l'objectif de ce projet est de produire une application-jeu pour géolocaliser et attraper des Miagemone.
-Nous avons donc utilisé Android Studio et nous avons codé en java (et en xml pour le front)
+Le gameplay est constitué ainsi : 
+Le joueur lance l'application avec son appareil (doit être connecté à google service et avoir une caméra). Il renseigne son identifiant et l'application ouvre alors la carte. Si l'identifiant existe dans la base de donnée, le joueur verra le message: "changer de pseudo".
+Une fois sur la carte, le joueur reçoit des indications d'itinéraire afin de trouver le Miagémon le plus proche parmi les 5.
+Lorsqu'il arrive au niveau du Miagémon, le joueur passe en mode "chasse" et la caméra affiche les alentrours. Quand l'orientation correspond à celle de la position du Miagémon, le joueur peut l'afficher puis le capturer en l'enregistrant dans sa galerie photo.
+Une fois capturé, le joueur est notifié du nombre de Miagémons qui lui reste à attaper, son score augmente et l'itinéraire du prochain Miagémon le plus proche est lancé.
+Lorsque le joueur a attrapé les 5 Miagémons, la partie est terminée. Le joueur peut alors relancer l'application et obtenir 5 nouveaux Miagémons positionnés au hasard dans le campus de l'Université de Bordeaux.
+
+Miagiste, attrapez-les tous!
+
+Pour réaliser cette application-jeu, nous avons donc utilisé Android Studio et nous avons codé en java (et en xml pour le front)
 Nous avons développé plusieurs activités ayant chacune leur utilité:
   - CameraActivity: cette activité permet via une API d'accéder à la caméra de l'utilisateur et d'afficher sur son écran ce que voit la caméra.
   Lorsque celui-ci va bouger dans l'espace la caméra et ce qui s'affiche à l'écran va également suivre son mouvement.
@@ -9,16 +19,13 @@ Nous avons développé plusieurs activités ayant chacune leur utilité:
   (par exemple à l'ouest, alors le joueur devait orienter son téléphone vers l'ouest pour voir le sprite).
   Malheureusement, nous n'avons pas réussi, nous affichons donc seulement un message avec un toast lorsque la caméra est ouverte.
   - DisplaySpriteActivity: Cette activité nous sert à pouvoir afficher et capturer le sprite en format d'image.
-  Le sprite va également s'afficher dans le visuel de la caméra.
-  - MainActivity:
-  
-  
-  - MapsActivity : l'activité maps est une activité centrale de notre projet. On utilise l'API Google.
+
+  - MainActivity:l'activité main est l'activité centrale de notre projet. On utilise l'API Google Maps.
   En effet, elle sert non seulement à pouvoir géolocaliser le jouer, localiser les sprite autour et lui indiquer comment se
   rendre proche du sprite à capturer. Pour un souci de simplification, nous avons borné la géolocalisation à un périmètre restreint
   autour la localisation du joueur.
   - Nous avons également d'autres fichiers java comme le SpriteSQLiteDatabase qui permet de créer et de gérer les sprite directement dans
-  une base de données firebase.
+  une base de données SQLite.
   
   Pour chaque activité, nous avons son correspondant xml qui permet d'afficher un écran.
   Dans ces fichiers, nous définissons le positionnement, le nom et l'action des boutons.
