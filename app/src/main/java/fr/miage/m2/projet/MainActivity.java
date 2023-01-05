@@ -72,10 +72,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView near;
     private FusedLocationProviderClient mFusedLocationClient;
     private FirebaseFirestore mDb;
-    private Sprite sprite;
-    private static SpriteDAO spriteDao;
+
+    private Sprite spriteT = new Sprite("0",0,0);
+    private Sprite sprite = spriteT;
+
+    private SpriteDAO spriteDao;
     private Intent i_camera;
-    private Intent i_maps;
+    private Intent i_end;
     private Intent i_display;
     private LatLngBounds mMapBoundaries;
     private MarkerOptions mCurrLocationMarker;
@@ -91,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-
     private GoogleMap mMap;
 
     @Override
@@ -99,6 +101,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         spriteDao = new SpriteDAO(getApplicationContext());
+        i_end=new Intent(this, EndActivity.class);
+/*
+        if(sprite.getName()=="end"){
+            startActivity(i_end);
+
+        }*/
+        try{
+            sprite = spriteDao.getSpriteById(1);
+            if(sprite.getName()=="end"){
+                startActivity(i_end);
+            }
+        }catch(NullPointerException e){
+            startActivity(i_end);
+        }
+        /*
+        if(spriteDao.getSpriteById(1).getName()=="end"){
+        }
+        */
+
+
+
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
         if(checkGooglePlayServices()){
@@ -116,8 +140,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         opencam = findViewById(R.id.opencam);
         near = findViewById(R.id.near);
-        String name = spriteDao.getSpriteById(1).getName();
-        strSprite = "sprite"+spriteDao.getId(name);
+        //String name = spriteDao.getSpriteById(1).getName();
+        try{
+            strSprite = spriteDao.getSpriteById(1).getName();
+
+        }catch(NullPointerException e){
+            startActivity(i_end);
+        }
+
+        //String name = asptt.getName();
+        //strSprite = "sprite"+asptt.getId();
         //System.out.print(strSprite);
         //opencam.setVisibility(View.INVISIBLE);
 
@@ -152,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-   public static SpriteDAO getDao(){return spriteDao;}
+   public  SpriteDAO getDao(){return spriteDao;}
 
 
     //here we are retrieving the location of our device.
@@ -302,6 +334,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
+
         //ajouter et mettre à jour l'itinéraire
         line = mMap.addPolyline(lineOptions
                     .add(myPos, spriteDao.getSpriteById(1).getLatLng())
@@ -310,15 +343,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         checkLocationSprite(myPos,spriteDao.getSpriteById(1).getLatLng());
     }
 
-    //afficher la camera
+    //regarder la distance pour afficher differentes choses
     private void checkLocationSprite(LatLng myPos, LatLng sprite){
 
         double lat1 = myPos.latitude;
         double lng1 = myPos.longitude;
-        //double lat2 = sprite.latitude;
-        //double lng2 = sprite.longitude;
-        double lat2 = spriteDao.getSpriteById(1).getLatitude();
-        double lng2 = spriteDao.getSpriteById(1).getLongitude();
+        double lat2 = sprite.latitude;
+        double lng2 = sprite.longitude;
 
 
         Location lmyPos = new Location("myPos");
@@ -338,7 +369,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
 
-        if (distance <= 50.0f) {
+        if (distance <= 5.0f) {
             opencam.setVisibility(View.VISIBLE);
             // les points sont à moins de 50 mètre l'un de l'autre
         } else {
@@ -358,50 +389,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void addSpritesOnMap(){
-        Sprite asptt = spriteDao.getSpriteById(1);
-        Sprite jeje = spriteDao.getSpriteById(2);
+
+        MarkerOptions aspttMo = new MarkerOptions().title(spriteDao.getSpriteById(1).getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+        mMap.addMarker(aspttMo
+                .position(spriteDao.getSpriteById(1).getLatLng()));
 
 
-        MarkerOptions aspttMo = new MarkerOptions().title("ASPTT").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-        Marker aspttM = mMap.addMarker(aspttMo
-                .position(asptt.getLatLng()));
+        if(spriteDao.getSpriteById(1) != null){
+            System.out.println("LE SPRITE DANS DAO EST : "  + spriteDao.getSpriteById(1).toString());
+        }else{
+            System.out.println("IL EST NULL");
 
-        MarkerOptions jejeMo = new MarkerOptions().title("jeje").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-        Marker jejeM = mMap.addMarker(jejeMo
-                .position(jeje.getLatLng()).title("jeje").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-
-
-        asptt.setMarker(aspttM);
-        jeje.setMarker(jejeM);
-
+        }
 
     }
 
 
     @Override
     public void onClick(View view) {
+
         i_camera = new Intent(this, CameraActivity.class);
 
         switch (view.getId()) {
             case R.id.opencam:
-                    //String strSprite = "sprite"+sprites.get(0).getId();
 
 
-                    //i_camera.putExtra("img", outputFile.getAbsoluteFile());
                     i_camera.putExtra("img",strSprite);
-                    //i_camera.putParcelableArrayListExtra("key", sprites);
-                    //i_camera.putExtra("sprites",sprites);
                     startActivity(i_camera);
-                    //sprites.remove(0);
 
                 //Toast.makeText(this, "img est null !!!", Toast.LENGTH_SHORT).show();
 
 
 
                 break;
-            case R.id.nav:
-                startActivity(i_maps);
-                break;
+
 
 
         }

@@ -14,4 +14,6 @@
     <string name="title_activity_sprite">DisplaySpriteActivity</string>
     <string name="instruction">Capture les Miagémones qui se trouvent aux emplacements bleus ! Une fois proche, appuie sur l\'icone caméra qui apparaît! Bonne chance :)</string>
     <string name="near">Un Miagémone est à moins de 100m ! </string>
+    <string name="title_activity_end">EndActivity</string>
+    <string name="end">Félicitation, tu les a tous attrapé, tu mérites ton diplôme de Miagiste ! \n A la prochaine !</string>
 </resources>

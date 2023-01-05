@@ -15,6 +15,9 @@ public class SpriteSQLiteDatabase extends SQLiteOpenHelper {
     @Override
     public void onCreate(android.database.sqlite.SQLiteDatabase sqLiteDatabase) {
         //On crée la base en exécutant la requête de création
+
+        //query += "INSERT INTO sprites(name, latitude, longitude) VALUES ('ASPTT', 43.3114334,-0.3843101);";
+        //query += "INSERT INTO sprites(name, email) VALUES (2, 'Jane', 'jane@example.com');";
         sqLiteDatabase.execSQL(query);
     }
     @Override

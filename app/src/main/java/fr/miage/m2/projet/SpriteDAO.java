@@ -3,18 +3,26 @@ package fr.miage.m2.projet;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.GeoPoint;
 
-public class SpriteDAO {
+import java.util.LinkedList;
+import java.util.Random;
+
+public class SpriteDAO extends AppCompatActivity {
     private final static int VERSION_BDD = 1;
     private final static String TABLE_NAME = "sprites";
     private SQLiteDatabase bdd;
     private SpriteSQLiteDatabase spriteSqLiteDatabase;
+    private Intent i_end;
+
     String[] projection = {
             "id",
             "name",
@@ -24,26 +32,70 @@ public class SpriteDAO {
 
 
 
-    GeoPoint geoPoint1 = new GeoPoint(43.3114334,-0.3843101);
-    GeoPoint geoPoint2 = new GeoPoint(43.30260467529297,-0.3971642553806305);
-    Sprite asptt = new Sprite("ASPTT", geoPoint1.getLatitude(), geoPoint1.getLongitude());
-    Sprite jeje = new Sprite("jeje", geoPoint2.getLatitude(),geoPoint2.getLongitude());
+    private static Sprite lisa = new Sprite("sprite1", 43.3114334, -0.3843101);
+    private static Sprite ylan = new Sprite("sprite2", 43.30260467529297,-0.3971642553806305);
+    private static Sprite maroua = new Sprite("sprite3", 43.30260467529297,-0.3971642553806305);
+    private static Sprite hassan = new Sprite("sprite4", 43.30260467529297,-0.3971642553806305);
+    private static Sprite dervin = new Sprite("sprite5", 43.30260467529297,-0.3971642553806305);
+
+    private static final Random RANDOM = new Random();
 
 
+    private static final LinkedList<Sprite> SPRITE = new LinkedList<>();
+    static {
+        SPRITE.add(lisa);
+        SPRITE.add(ylan);
+        SPRITE.add(maroua);
+        SPRITE.add(hassan);
+        SPRITE.add(dervin);
 
-
-
+    }
 
 
 
     public SpriteDAO(Context context) {
         this.spriteSqLiteDatabase = new SpriteSQLiteDatabase(context, "sprites", null, VERSION_BDD);
+        clean();
+        if(!SPRITE.isEmpty()){
+            Sprite sprite = getRandomSprite();
+            addSprite(sprite);
+        }else{
+            clean();
 
-        addSprite(asptt);
-        addSprite(jeje);
+        }
+
+
+
+
+
+        //addSprite(jeje);
 
 
     }
+
+
+    private void startSprite(){
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+    public static Sprite getRandomSprite() {
+        int index = RANDOM.nextInt(SPRITE.size());
+        Sprite monType = SPRITE.get(index);
+        SPRITE.remove(index);
+        return monType;
+    }
+
+
 
     public void open() {
         //On ouvre la BDD en écriture
@@ -64,12 +116,14 @@ public class SpriteDAO {
         open();
         //Création d'un ContentValues (fonctionne comme une HashMap)
         ContentValues values = new ContentValues();
+
+        values.put("id",1);
         values.put("name", sprite.getName());
         values.put("latitude", sprite.getLatitude());
         values.put("longitude", sprite.getLongitude());
         //on insère l'objet dans la BDD via le ContentValues
-        //System.out.println("ok added");
-        //System.out.println(getId("ASPTT"));
+        System.out.println("ok added");
+        System.out.println(sprite.getId());
 
         return bdd.insert(TABLE_NAME, null, values);
     }
@@ -110,6 +164,13 @@ public class SpriteDAO {
         }
 
         return null;
+    }
+
+
+    public void clean(){
+        open();
+        bdd.delete(TABLE_NAME,null,null);
+        close();
     }
 
 

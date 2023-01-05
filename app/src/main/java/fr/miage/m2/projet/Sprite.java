@@ -13,6 +13,7 @@ import com.google.firebase.firestore.GeoPoint;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
+import java.util.Objects;
 
 //dans la classe build.grade, ajouter implementation 'com.android.support:appcompat-v7:28.0.0'
 //j'ai l'impression que ça ne marche pas chez moi, on dirait un pb de compatibilité de versions
@@ -30,16 +31,13 @@ public class Sprite implements Serializable {
     private double latitude;
     private double longitude;
 
-    // Largeur et hauteur du sprite
-    //private int width;
-    //private int height;
 
     // Image du sprite
     private byte[] image;
     private int imageId;
 
     public Sprite(String name, double latitude, double longitude) {
-        //this.id = incrId;
+        //id = incrId;
         //incrId++;
         this.name = name;
         this.latitude = latitude;
@@ -50,6 +48,18 @@ public class Sprite implements Serializable {
 
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Sprite sprite = (Sprite) o;
+        return Double.compare(sprite.latitude, latitude) == 0 && Double.compare(sprite.longitude, longitude) == 0 && name.equals(sprite.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, latitude, longitude);
+    }
 
     public double getLatitude() {
         return latitude;
@@ -96,20 +106,12 @@ public class Sprite implements Serializable {
         LatLng sLatLng = new LatLng(this.getLatitude(), this.getLongitude());
         return sLatLng;
     }
-    public void setMarker(Marker marker) {
-        this.marker = marker;
-    }
-
-
-    public Marker getMarker(){
-        return this.marker;
-    }
 
     @Override
     public String toString() {
         return "Sprite{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+
+                "name='" + name + '\'' +
                 ", geo_point=" + geo_point  +
                 '}';
     }

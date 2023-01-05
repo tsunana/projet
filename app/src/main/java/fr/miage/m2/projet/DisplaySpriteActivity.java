@@ -79,8 +79,9 @@ public class DisplaySpriteActivity extends AppCompatActivity implements View.OnC
     public void onClick(View view) {
             i_maps = new Intent(this, MainActivity.class);
             String fileName = i.getStringExtra("img");
-            SpriteDAO spriteDao = MainActivity.getDao();
-            String name = spriteDao.getSpriteById(1).getName();
+
+            //SpriteDAO spriteDao = MainActivity.getDao();
+            //String name = spriteDao.getSpriteById(1).getName();
             //ArrayList<Sprite> sprites = getIntent().getParcelableArrayListExtra("key");
 
             //Toast.makeText(this, fileName, Toast.LENGTH_SHORT).show();
@@ -90,23 +91,22 @@ public class DisplaySpriteActivity extends AppCompatActivity implements View.OnC
             case R.id.btnSaveSprite :
 
                 textView = findViewById(R.id.caught);
-                textView.setText("Feliciation !! Miagémone [" +name +"] attrapé ");
+                textView.setText("Félicitation, Miagémone attrapé !");
                 imageView = findViewById(R.id.sprite);
-
-
+                findViewById(R.id.btnSaveSprite).setVisibility(View.INVISIBLE);
                 int resId = getResources().getIdentifier(fileName, "drawable", getPackageName());
 
                 imageView.setImageResource(resId);
                 takePicture();
 
-                Toast.makeText(this, fileName, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, fileName, Toast.LENGTH_SHORT).show();
                 //sprites.remove(0);
                 new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {
                         startActivity(i_maps);
                     }
-                }, 3000);
+                }, 2000);
 
                 break;
         }
