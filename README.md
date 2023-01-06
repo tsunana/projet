@@ -4,10 +4,10 @@ Premièrement, l'objectif de ce projet est de produire une application-jeu pour 
 Il est nécessaire d'avoir un téléphone Android doté d'une connection internet pour la connection avec l'API Google ainsi qu'une caméra.
 
 GamePlay : 
-Une fois l'application lancé sur le téléphone, le joueur à la possibilité de capturer des Miagémones, un par un. Un premier Miagémone apparait sur la carte, une fois attrapé, un nouveau Miagémone est affiché sur la carte. Une fois que les 5 Miagémones créés on été attrapé, le jeu affiche un page de fin.
+Une fois l'application lancé sur le téléphone, le joueur a la possibilité de capturer des Miagémones, un par un. Un premier Miagémone apparait sur la carte, une fois attrapé, un nouveau Miagémone est affiché sur la carte. Une fois que les 5 Miagémones créés on été attrapé, le jeu affiche une page de fin.
 
 Fonctionnement : 
-L'application s'ouvre sur une demi page. Le bas de la page est la carte indiquant la position du joueur en rouge et celle du Miagémone en bleu. La carte affiche une ligne rouge reliant la position du joueur au Miagémone, qui sert d'itinéraire pour rejoindre ce dernier. Le haut de la page donne des indications sur la proximité avec le Miagémone. A moins de 50m un message apparait sur la partie haute de l'écran, à moins de 5m le bouton permettant d'ouvrir la caméra apparait. Lorsqu'il arrive à 5m du Miagémone, le joueur peut passe en mode "chasse" et ouvrir la caméra, dans laquelle est superposée une boussole. Un message apparait pour indiquer au joueur de se positioner à l'Ouest avant de capturer le Miagémone. Le joueur peut ensuite appuyer sur la Miagéball pour capturer le Miagémone, qui est ensuite affiché une fois attrapé. Il est enregistré dans les fichiers du téléphone. Les Miagémones sont choisis au hasard parmis une liste de 5 et sont affichés l'un aprés l'autre. Une fois qu'un à été attrapé, il est supprimé de la liste pour ne pas réapparaitre. Lorsque le joueur a attrapé les 5 Miagémones générés au hasard, la partie est terminée. 
+L'application s'ouvre sur une demi page. Le bas de la page est la carte indiquant la position du joueur en rouge et celle du Miagémone en bleu. La carte affiche une ligne rouge reliant la position du joueur au Miagémone, qui sert d'itinéraire pour rejoindre ce dernier. Le haut de la page donne des indications sur la proximité avec le Miagémone. A moins de 50m un message apparait sur la partie haute de l'écran, à moins de 5m le bouton permettant d'ouvrir la caméra apparait. Lorsqu'il arrive à 5m du Miagémone, le joueur peut passe en mode "chasse" et ouvrir la caméra, dans laquelle est superposée une boussole. Un message apparait pour indiquer au joueur de se positioner à l'Ouest avant de capturer le Miagémone. Le joueur peut ensuite appuyer sur la Miagéball pour capturer le Miagémone, qui est ensuite affiché une fois attrapé. Il est enregistré dans les fichiers du téléphone. Les Miagémones sont choisis au hasard parmis une liste de 5 et sont affichés l'un aprés l'autre. Une fois qu'un a été attrapé, il est supprimé de la liste pour ne pas réapparaitre. Lorsque le joueur a attrapé les 5 Miagémones générés au hasard, la partie est terminée. 
 
 
 
@@ -30,4 +30,8 @@ Dans les fichiers values, nous définissons tout ce qui concerne les éléments 
 
 Enfin, le fichier AndroidManifest.xml va non seulement définir les caractéristiques propres au projet, mais également les autorisations d'accès à différents élements de l'appareil utilisé.
 
+
+N.B. : La vidéo est une démonstration avec seulement 2 sprites à attraper.
+
+Merci pour votre lecture ! Bon jeu. 
  
