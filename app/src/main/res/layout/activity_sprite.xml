@@ -48,12 +48,6 @@
         android:text="@string/capture"
         app:srcCompat="@drawable/pokeball" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_gravity="center"
-        android:textAlignment="center"
-        android:textSize="50px"
-        android:text="@string/catch2" />
+
 
 </LinearLayout>

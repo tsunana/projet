@@ -33,8 +33,8 @@ public class SpriteDAO extends AppCompatActivity {
 
 
     private static Sprite lisa = new Sprite("sprite1", 43.3114334, -0.3843101);
-    private static Sprite ylan = new Sprite("sprite2", 43.30260467529297,-0.3971642553806305);
-    private static Sprite maroua = new Sprite("sprite3", 43.30260467529297,-0.3971642553806305);
+    private static Sprite ylan = new Sprite("sprite2", 43.31139373779297,-0.3854704797267914);
+    private static Sprite maroua = new Sprite("sprite3", 43.31139373779297,-0.3854704797267914);
     private static Sprite hassan = new Sprite("sprite4", 43.30260467529297,-0.3971642553806305);
     private static Sprite dervin = new Sprite("sprite5", 43.30260467529297,-0.3971642553806305);
 
@@ -45,9 +45,9 @@ public class SpriteDAO extends AppCompatActivity {
     static {
         SPRITE.add(lisa);
         SPRITE.add(ylan);
-        SPRITE.add(maroua);
-        SPRITE.add(hassan);
-        SPRITE.add(dervin);
+        //SPRITE.add(maroua);
+        //SPRITE.add(hassan);
+        //SPRITE.add(dervin);
 
     }
 

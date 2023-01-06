@@ -362,23 +362,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         float distance = lmyPos.distanceTo(lsprite);
 
-        if (distance <= 5.0f) {
+
             //moins de 5 metres
-            Toast.makeText(this, "Le Miagémone est là ! Ouvre la caméra et oriente toi à l'Ouest", Toast.LENGTH_SHORT).show();
-
-
-        }
-
         if (distance <= 5.0f) {
             opencam.setVisibility(View.VISIBLE);
-            // les points sont à moins de 50 mètre l'un de l'autre
+            //Toast.makeText(this, "Le Miagémone est là ! Ouvre la caméra et oriente toi à l'Ouest", Toast.LENGTH_SHORT).show();
+
+            // les points sont à moins de 5 mètre l'un de l'autre
         } else {
             opencam.setVisibility(View.INVISIBLE);
 
         }
-        if (distance <= 100.0f) {
+        if (distance <= 50.0f) {
             near.setVisibility(View.VISIBLE);
-            // les points sont à moins de 100 mètre l'un de l'autre
+            // les points sont à moins de 50 mètre l'un de l'autre
         } else {
             near.setVisibility(View.INVISIBLE);
 

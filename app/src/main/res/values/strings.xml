@@ -1,19 +1,18 @@
 <resources>
-    <string name="app_name">projet</string>
-    <string name="title_activity_maps">MapsActivity</string>
+    <string name="app_name">MIAGEMONE</string>
     <string name="google_map_api_key">AIzaSyDOE3lEYgF_1Yuo_nNnRTzncaImJ5fZ848</string>
     <string name="intent_sprite_list">intent_sprite_list</string>
     <string name="collection_sprite">Sprite</string>
     <string name="compass">Compass</string>
     <string name="capture">Capture</string>
     <string name="camera_button">Camera button</string>
-    <string name="title_activity_camera">CameraActivity</string>
+    <string name="title_activity_camera">Attrape le Miagémone !</string>
     <string name="title_activity_compass">CompassActivity</string>
     <string name="catch1">Voulez vous attraper ce Miagémone?</string>
     <string name="catch2">Attraper!</string>
-    <string name="title_activity_sprite">DisplaySpriteActivity</string>
+    <string name="title_activity_sprite">Découvrir le Miagémone</string>
     <string name="instruction">Capture les Miagémones qui se trouvent aux emplacements bleus ! Une fois proche, appuie sur l\'icone caméra qui apparaît! Bonne chance :)</string>
-    <string name="near">Un Miagémone est à moins de 100m ! </string>
-    <string name="title_activity_end">EndActivity</string>
+    <string name="near">Un Miagémone est à moins de 50m ! </string>
+    <string name="title_activity_end">Félicitation, fin du jeu</string>
     <string name="end">Félicitation, tu les a tous attrapé, tu mérites ton diplôme de Miagiste ! \n A la prochaine !</string>
 </resources>
