@@ -31,7 +31,7 @@ Dans les fichiers values, nous définissons tout ce qui concerne les éléments 
 Enfin, le fichier AndroidManifest.xml va non seulement définir les caractéristiques propres au projet, mais également les autorisations d'accès à différents élements de l'appareil utilisé.
 
 
-N.B. : La vidéo est une démonstration avec seulement 2 sprites à attraper.
+N.B. : La vidéo est une démonstration avec seulement 2 sprites à attraper : demonstration_BECHET_BENZAKINE_miagemone.mp4
 
 Merci pour votre lecture ! Bon jeu. 
  
