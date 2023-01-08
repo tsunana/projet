@@ -32,6 +32,7 @@ Enfin, le fichier AndroidManifest.xml va non seulement définir les caractérist
 
 
 N.B. : La vidéo est une démonstration avec seulement 2 sprites à attraper : demonstration_BECHET_BENZAKINE_miagemone.mp4
+Pour des raisons personnelles, les sprites n'ont pas été placés a l'Université de Bordeaux mais à Pau, près de mon domicile durant les fêtes de fin d'année. Bien cordialement, (Lisa BECHET)
 
 Merci pour votre lecture ! Bon jeu. 
  
